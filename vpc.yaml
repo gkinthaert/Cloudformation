@@ -1,0 +1,85 @@
+# AWSTemplateFormatVersion
+# Description
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CloudFormation for VPC'
+Resources:
+  MyVPC: 
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: '172.16.0.0/16' # since we already have a 10.0.0.0/16 vpc
+      EnableDnsSupport: true # helps resolve DNS issues
+      EnableDnsHostnames: true # allows use of hostnames
+      Tags:
+        - Key: Name
+          Value: MyVPC
+# Public subnet in AZ 1
+  PublicSubnet1A:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: '172.16.1.0/24'
+      AvailabilityZone: !Select [0, !GetAZs '']
+      MapPublicIpOnLaunch: true # automatically assign a public ip so it can reach the internet
+      Tags:
+      - Key: Name
+        Value: PublicSubnet1A
+# App private subnet in AZ 1
+  AppPrivateSubnet1A:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: '172.16.2.0/24'
+      AvailabilityZone: !Select [0, !GetAZs '']
+      Tags:
+      - Key: Name
+        Value: AppPrivateSubnet1A
+# DB private subnet in AZ 1
+  DataPrivateSubnet1A:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: '172.16.3.0/24'
+      AvailabilityZone: !Select [0, !GetAZs '']
+      Tags:
+      - Key: Name
+        Value: DataPrivateSubnet1A
+# Public subnet in AZ 2
+  PublicSubnet2B:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: '172.16.4.0/24'
+      AvailabilityZone: !Select [1, !GetAZs '']
+      MapPublicIpOnLaunch: true # automatically assign a public ip so it can reach the internet
+      Tags:
+      - Key: Name
+        Value: PublicSubnet2B
+# App private subnet in AZ 2
+  AppPrivateSubnet2B:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: '172.16.5.0/24'
+      AvailabilityZone: !Select [1, !GetAZs '']
+      Tags:
+      - Key: Name
+        Value: AppPrivateSubnet2B
+# DB pribate subnet in AZ 2
+  DataPrivateSubnet2B:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: '172.16.6.0/24'
+      AvailabilityZone: !Select [1, !GetAZs '']
+      Tags:
+      - Key: Name
+        Value: DataPrivateSubnet2B
+
+# Internet gateway
+
+# Route tables
+
+# Routes
+
+# Subnet associations
