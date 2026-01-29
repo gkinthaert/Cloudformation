@@ -1,0 +1,12 @@
+# AWSTemplateFormatVersion
+# Description
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'another s3 bucket for geert'
+Resources:
+  S3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: 'gertie-s3-bucket'
+    
+
