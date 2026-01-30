@@ -4,6 +4,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'CloudFormation for VPC'
 Resources:
+# Ny VPC
   MyVPC: 
     Type: 'AWS::EC2::VPC'
     Properties:
@@ -65,7 +66,7 @@ Resources:
       Tags:
       - Key: Name
         Value: AppPrivateSubnet2B
-# DB pribate subnet in AZ 2
+# DB private subnet in AZ 2
   DataPrivateSubnet2B:
     Type: 'AWS::EC2::Subnet'
     Properties:
@@ -76,10 +77,50 @@ Resources:
       - Key: Name
         Value: DataPrivateSubnet2B
 
-# Internet gateway
+# Internet Gateway IGW
+InternetGateway:
+  Type: 'AWS::EC2::InternetGateway'
+  Properties:
+    Tags:
+      - Key: Name
+        Value: MyVPC-IGW
 
-# Route tables
+# Attach Gateway
+AttachGateway:
+  Type: 'AWS::EC2::VPCGatewayAttachment'
+  Properties:
+    VpcId: !Ref MyVPC
+    InternetGatewayId: !Ref InternetGateway
 
-# Routes
+# Route Table
+PublicRouteTable:
+  Type: 'AWS::EC2::RouteTable'
+  Properties:
+    VpcId: !Ref MyVPC
+    Tags:
+      - Key: Name
+        Value: PublicRouteTable
 
-# Subnet associations
+# Public Route
+PublicRoute:
+  Type: 'AWS::EC2::Route'
+  DependsOn: AttachGateway
+  Properties:
+    RouteTableId: !Ref PublicRouteTable
+    DestinationCidrBlock: '0.0.0.0/0'
+    GatewayId: !Ref InternetGateway
+
+# Public Subnet 1A Route Table Association   
+PublicSubnet1ARouteTableAssociation:
+  Type: 'AWS::EC2::SubnetRouteTableAssociation'
+  Properties:
+    SubnetId: !Ref PublicSubnet1A
+    RouteTableId: !Ref PublicRouteTable
+
+# Public Subnet 1A Route Table Association   
+PublicSubnet2BRouteTableAssociation:
+  Type: 'AWS::EC2::SubnetRouteTableAssociation'
+  Properties:
+    SubnetId: !Ref PublicSubnet2B
+    RouteTableId: !Ref PublicRouteTable
+    
