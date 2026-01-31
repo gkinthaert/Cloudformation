@@ -78,49 +78,128 @@ Resources:
         Value: DataPrivateSubnet2B
 
 # Internet Gateway IGW
-InternetGateway:
-  Type: 'AWS::EC2::InternetGateway'
-  Properties:
-    Tags:
+  InternetGateway:
+    Type: 'AWS::EC2::InternetGateway'
+    Properties:
+      Tags:
       - Key: Name
         Value: MyVPC-IGW
 
 # Attach Gateway
-AttachGateway:
-  Type: 'AWS::EC2::VPCGatewayAttachment'
-  Properties:
-    VpcId: !Ref MyVPC
-    InternetGatewayId: !Ref InternetGateway
+  AttachGateway:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref MyVPC
+      InternetGatewayId: !Ref InternetGateway
 
 # Route Table
-PublicRouteTable:
-  Type: 'AWS::EC2::RouteTable'
-  Properties:
-    VpcId: !Ref MyVPC
-    Tags:
+  PublicRouteTable:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      VpcId: !Ref MyVPC
+      Tags:
       - Key: Name
         Value: PublicRouteTable
 
 # Public Route
-PublicRoute:
-  Type: 'AWS::EC2::Route'
-  DependsOn: AttachGateway
-  Properties:
-    RouteTableId: !Ref PublicRouteTable
-    DestinationCidrBlock: '0.0.0.0/0'
-    GatewayId: !Ref InternetGateway
+  PublicRoute:
+    Type: 'AWS::EC2::Route'
+    DependsOn: AttachGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId: !Ref InternetGateway
 
 # Public Subnet 1A Route Table Association   
-PublicSubnet1ARouteTableAssociation:
-  Type: 'AWS::EC2::SubnetRouteTableAssociation'
-  Properties:
-    SubnetId: !Ref PublicSubnet1A
-    RouteTableId: !Ref PublicRouteTable
+  PublicSubnet1ARouteTableAssociation:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref PublicSubnet1A
+      RouteTableId: !Ref PublicRouteTable
 
 # Public Subnet 1A Route Table Association   
-PublicSubnet2BRouteTableAssociation:
-  Type: 'AWS::EC2::SubnetRouteTableAssociation'
-  Properties:
-    SubnetId: !Ref PublicSubnet2B
-    RouteTableId: !Ref PublicRouteTable
+  PublicSubnet2BRouteTableAssociation:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref PublicSubnet2B
+      RouteTableId: !Ref PublicRouteTable
     
+# Bastion Host EC2
+  BastionHost:
+    Type: 'AWS::EC2::Instance'    
+    Properties:
+      InstanceType: t3.micro
+      KeyName: Bastion
+      ImageId: ami-03ea746da1a2e36e7
+      SubnetId: !Ref PublicSubnet1A
+      SecurityGroupIds:
+        - !Ref BastionSG
+      Tags:
+        - Key: Name
+          Value: BastionHost
+
+# Bastion Security Group
+  BastionSG:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: 'Enable SSH access'
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 71.233.43.155/32
+
+# AppInstance1A
+  AppInstance1A:
+    Type: 'AWS::EC2::Instance'  
+    Properties:
+      InstanceType: t3.micro
+      KeyName: Bastion
+      ImageId: ami-03ea746da1a2e36e7
+      SubnetId: !Ref AppPrivateSubnet1A
+      SecurityGroupIds:
+        - !Ref AppInstance1ASG
+      Tags:
+        - Key: Name
+          Value: App1
+
+
+# AppInstance2B
+  AppInstance2B:
+    Type: 'AWS::EC2::Instance'  
+    Properties:
+      InstanceType: t3.micro
+      KeyName: Bastion
+      ImageId: ami-03ea746da1a2e36e7
+      SubnetId: !Ref AppPrivateSubnet2B
+      SecurityGroupIds:
+        - !Ref AppInstance2BSG
+      Tags:
+        - Key: Name
+          Value: App2          
+
+#SG App 1A
+  AppInstance1ASG:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: 'Allow SSH from Bastion'
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          SourceSecurityGroupId: !Ref BastionSG
+
+#SG App 2B
+  AppInstance2BSG:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: 'Allow ICMP Ping from App 1'
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: icmp
+          FromPort: -1
+          ToPort: -1
+          SourceSecurityGroupId: !Ref AppInstance1ASG
+          
