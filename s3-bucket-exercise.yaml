@@ -1,5 +1,5 @@
 # AWSTemplateFormatVersion
-# Description
+# Description - creates a new S3 bucket
 
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'another s3 bucket for geert'

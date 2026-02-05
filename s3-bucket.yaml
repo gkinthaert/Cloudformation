@@ -1,5 +1,5 @@
-# CloudFormationTemplateVersion
-# Description
+# AWSTemplateFormatVersion 
+# Description - creates a new S3 bucket
 
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'CloudFormation Template for S3 Bucket'

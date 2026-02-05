@@ -1,5 +1,5 @@
 # AWSTemplateFormatVersion
-# Description
+# Description - creates an IAM user, IAM User group, IAM Role, and IAM Policy
 
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'IAM Cloudformation template'
