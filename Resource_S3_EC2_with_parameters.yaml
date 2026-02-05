@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Udemy Cloudformation template to create S3 bucket and an EC2 instance, with parameters section'
+# Parameters 
+Parameters:
+  # Parameter for the AMI ID
+  EC2AMIIDParameter:
+    Type: String 
+    Default: ami-03ea746da1a2e36e7
+    AllowedValues:
+      - ami-03ea746da1a2e36e7
+      - ami-06e3c045d79fd65d9
+      - ami-0d06341082ee51b51
+    Description: 'Enter the desired AMI ID'
+  
+  # Parameter for the Instance Type
+  InstanceTypeParameter:
+    Type: String 
+    Default: 't3.micro'
+    AllowedValues:
+      - 't3.micro'
+      - 'm1.small'
+      - 'm1.large'
+    Description: 'Enter t3.micro, m1.small, or m1.large. The default is t3.micro'
+
+  # Parameter for the Bucketname
+  # There is no default as it needs to be unique - leave to user
+  S3BucketNameParameter:
+    Type: String 
+
+# Resources
+Resources:
+
+  # S3 bucket
+  GeertS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref S3BucketNameParameter
+  # EC2 instance
+  GeertEC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !Ref EC2AMIIDParameter
+      InstanceType: !Ref InstanceTypeParameter

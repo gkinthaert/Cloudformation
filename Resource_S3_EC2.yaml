@@ -1,0 +1,15 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Udemy Cloudformation template to create S3 bucket and an EC2 instance'
+Resources:
+  # S3 bucket
+  GeertS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: 'geert-udemy-s3-bucket' # actually not a required property
+      # bucket names need to be lowercase and globally unique
+  # EC2 instance
+  GeertEC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: 'ami-03ea746da1a2e36e7'
+      InstanceType: 't3.micro'

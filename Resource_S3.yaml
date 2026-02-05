@@ -1,0 +1,8 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Udemy Cloudformation template to create S3 bucket'
+Resources:
+  GeertS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: 'geert-udemy-s3-bucket' # actually not a required property
+      # bucket names need to be lowercase and globally unique
