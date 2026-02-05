@@ -2,7 +2,7 @@
 # Description
 
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'CloudFormation for VPC'
+Description: 'CloudFormation template for VPC'
 Resources:
 # Ny VPC
   MyVPC: 
