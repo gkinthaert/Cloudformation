@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Cloudformation template for S3 static website hosting'
+Resources:
+  MyS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: 'mystatic-website-grk'
+      #WebsiteConfiguration:
+       # IndexDocument: 'index.html'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        # public access to a bucket is blocked by default
+        RestrictPublicBuckets: false
+  # set the bucket policy
+  BucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref MyS3Bucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: 'PublicReadGetObject'
+            Effect: 'Allow'
+            Principal: '*' # accessible to all
+            Action: 's3:GetObject' # lets you read the object
+            Resources: !Sub 'arn:aws:s3:::${MyS3Bucket}/*' #star applies to all objects in the bucket
+
