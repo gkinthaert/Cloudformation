@@ -5,12 +5,12 @@ Resources:
     Type: 'AWS::S3::Bucket'
     Properties:
       BucketName: 'mystatic-website-grk'
-      #WebsiteConfiguration:
-       # IndexDocument: 'index.html'
+      WebsiteConfiguration:
+        IndexDocument: 'index.html'
       PublicAccessBlockConfiguration:
-        BlockPublicAcls: false
-        BlockPublicPolicy: false
-        IgnorePublicAcls: false
+        #BlockPublicAcls: false #recommended for addition by Claude
+        #BlockPublicPolicy: false #recommended for addition by Claude
+        #IgnorePublicAcls: false #recommended for addition by Claude
         # public access to a bucket is blocked by default
         RestrictPublicBuckets: false
   # set the bucket policy
@@ -25,5 +25,5 @@ Resources:
             Effect: 'Allow'
             Principal: '*' # accessible to all
             Action: 's3:GetObject' # lets you read the object
-            Resources: !Sub 'arn:aws:s3:::${MyS3Bucket}/*' #star applies to all objects in the bucket
+            Resource: !Sub 'arn:aws:s3:::${MyS3Bucket}/*' #star applies to all objects in the bucket
 
