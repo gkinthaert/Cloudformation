@@ -1,6 +1,26 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Udemy Cloudformation template to create S3 bucket and an EC2 instance, with parameters section'
+Description: 'Udemy Cloudformation template to create S3 bucket and an EC2 instance, with metadate and parameters section'
 # works only in the console not with cloudformation cli
+# this is helpful to organize parameters under metadata headers
+# when you have a lot of parameters
+
+# Metadata
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - 
+        Label:
+          default: 'Compute Configuration'
+        Parameters:
+          - EC2AMIIDParameter
+          - InstanceTypeParameter
+      - 
+        Label:
+          default: 'Storage Configuration'
+        Parameters:
+          - S3BucketNameParameter
+
 # Parameters 
 Parameters:
   # Parameter for the AMI ID

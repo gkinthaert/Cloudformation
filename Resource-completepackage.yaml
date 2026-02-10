@@ -1,0 +1,111 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Cloudformation templage using resources, parameters and metadata'
+# Builds a VPC, Subnet, EC2 compute, S3 database
+
+# Metadata
+Metadata:
+  AWS::Cloudformation::Interface:
+    ParameterGroups:
+      -
+        Label:
+          default: 'Network Configuration'
+        Parameters:
+          - VPCCidrParameter
+          - SubnetCidrParameter
+      -
+        Label:
+          default: 'Compute Configuration'
+        Parameters:
+          - EC2AMIParameter
+          - EC2TypeParameter
+      -
+        Label:
+          default: 'Storage Configuration'
+        Parameters:
+          - S3StorageParameter
+
+# Parameters
+Parameters:
+  # Parameter for the VPC CIDR blocks
+  VPCCidrParameter:
+    Type: String
+    Default: 10.0.0.0/16
+    AllowedValues:
+      - 10.0.0.0/16
+      - 10.0.0.0/24
+    Description: 'Enter the CDIR block for the VPC'
+ 
+  # Parameter for the Subnet CIDR blocks
+  SubnetCidrParameter:
+    Type: String
+    Default: 10.0.0.0/24
+    AllowedValues:
+      - 10.0.0.0/24
+      - 10.0.0.0/32
+    Description: 'Enter the CDIR block for the Subnet'
+
+  # Parameter for the EC2 AMI
+  EC2AMIParameter:
+    Type: String
+    Default: ami-05efc83cb5512477c
+    AllowedValues:
+      - ami-05efc83cb5512477c
+      - ami-03e666df3cd425262
+    Description: 'Select the AMI you want for the EC2 compute instance'
+  
+  # Parameter for the EC2 Type
+  EC2TypeParameter:
+    Type: String
+    Default: 't3.micro'
+    AllowedValues:
+      - 't3.micro'
+      - 't2.micro'
+    Description: 'Select the instance type for the EC2 compute instance'
+
+  # Parameter for the EC2 Type
+  S3StorageParameter:
+    Type: String
+    Description: 'Select the S3 bucket name'
+
+# Resources
+Resources:
+  # VPC
+  BankingVPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: !Ref VPCCidrParameter
+      EnableDnsHostnames: True
+      EnableDnsSupport: True
+      Tags:
+        - Key: Project
+          Value: Banking
+
+  # Subnet
+  BankingSubnet:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      CidrBlock: !Ref SubnetCidrParameter
+      Tags:
+        - Key: Project
+          Value: Banking
+      VpcId:  !Ref BankingVPC
+
+  # Compute EC2
+  BankingEC2:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !Ref EC2AMIParameter
+      InstanceType: !Ref EC2TypeParameter
+      SubnetId: !Ref BankingSubnet
+      Tags:
+        - Key: Project
+          Value: Banking
+
+# Storage
+  BankingS3:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref S3StorageParameter
+      Tags:
+        - Key: Project
+          Value: Banking
