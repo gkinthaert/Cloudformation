@@ -2,7 +2,23 @@
 AWSTemplateFormatVersion: '2010-09-09'
 
 # Description
-Description: 'This is a banking app using S3, Lambda and API Gateway this time with parameter section'
+Description: 'This is a banking app using S3, Lambda and API Gateway this time with parameter and metadata section'
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      -
+        Label: 
+          default: 'Lambda parameters'
+        Parameters:
+          - LambdaRoleNameParameter
+          - LambdaRuntimeParameter
+      -
+        Label:
+          default: 'REST API parameters'
+        Parameters:
+          - RESTAPINameParameter
+          - RESTAPIStageParameter
 
 # Parameters
 Parameters:
